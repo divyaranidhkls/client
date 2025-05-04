@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 interface Comment {
   id: string;
@@ -24,8 +24,7 @@ export default function AllCommentsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch comments with pagination
-  const fetchComments = async (currentPage: number) => {
+  const fetchComments = useCallback(async (currentPage: number) => {
     setLoading(true);
     setError(null); // Reset error state on new request
     try {
@@ -38,7 +37,7 @@ export default function AllCommentsPage() {
       );
 
       if (!res.ok) {
-        throw new Error('Failed to fetch comments');
+        throw new Error("Failed to fetch comments");
       }
 
       const data = await res.json();
@@ -47,7 +46,6 @@ export default function AllCommentsPage() {
       );
 
       setComments((prev) => {
-        // Avoid duplicates when loading comments
         const newComments = cleanedComments.filter(
           (newComment) =>
             !prev.some((existing) => existing.id === newComment.id)
@@ -62,14 +60,12 @@ export default function AllCommentsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // Trigger fetch on page change
   useEffect(() => {
     fetchComments(page);
-  }, [page]);
+  }, [page, fetchComments]);
 
-  // Load more comments
   const handleLoadMore = () => {
     if (page < totalPages) {
       setPage((prev) => prev + 1);
@@ -89,7 +85,7 @@ export default function AllCommentsPage() {
       ) : (
         <ul className="space-y-6">
           {comments.map((comment) => {
-            if (!comment.id) return null; // Skip if comment id is missing
+            if (!comment.id) return null;
 
             return (
               <li
@@ -119,7 +115,6 @@ export default function AllCommentsPage() {
         </ul>
       )}
 
-      {/* Load more button */}
       {page < totalPages && !loading && (
         <div className="mt-8 flex justify-center">
           <button
