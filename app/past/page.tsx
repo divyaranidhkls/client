@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { format, subDays } from "date-fns";
 
@@ -18,7 +19,9 @@ const PastPostsPage = () => {
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const [beforeDate, setBeforeDate] = useState(format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+  const [beforeDate, setBeforeDate] = useState(
+    format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+  );
 
   useEffect(() => {
     fetchPosts(page, beforeDate);
@@ -28,7 +31,9 @@ const PastPostsPage = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:3000/posts/pastposts?before=${encodeURIComponent(date)}&page=${pageNum}&limit=${limit}`,
+        `http://localhost:3000/posts/pastposts?before=${encodeURIComponent(
+          date
+        )}&page=${pageNum}&limit=${limit}`,
         {
           credentials: "include",
         }
@@ -92,14 +97,15 @@ const PastPostsPage = () => {
 
         <div className="space-y-4">
           {posts.length === 0 ? (
-            <p className="text-center text-gray-500">No posts found for this period.</p>
+            <p className="text-center text-gray-500">
+              No posts found for this period.
+            </p>
           ) : (
             posts.map((post) => (
-              <div
-                key={post.id}
-                className="border p-4 rounded"
-              >
-                <h2 className="text-lg font-semibold text-gray-700">{post.title}</h2>
+              <div key={post.id} className="border p-4 rounded">
+                <h2 className="text-lg font-semibold text-gray-700">
+                  {post.title}
+                </h2>
                 <p className="text-gray-600 text-sm mt-1">{post.content}</p>
                 <p className="text-xs text-gray-400 mt-2">
                   {new Date(post.createdAt).toLocaleString()}
