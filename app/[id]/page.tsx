@@ -51,7 +51,7 @@ const [liked, setLiked] = useState(false);
       const json = await res.json();
       setComments(json.data || []);
     } catch (err) {
-      console.error("Failed to fetch comments");
+      console.error("Failed to fetch comments",err);
     }
   };
   const fetchLikes = async () => {
